@@ -1,0 +1,142 @@
+/* SANCTUM deck — design tokens v1 (identity ported from the product) */
+:root {
+  --ink: #07090f;
+  --ink-2: #0b0f1a;
+  --kyber: #67e8f9;
+  --kyber-dim: #2e8fa3;
+  --kyber-bright: #dffcff;
+  --ember: #e8b44c;
+  --threat: #ff3b3b;
+  --bone: #e8e6df;
+  --ghost: #9aa3b2;
+  --font-display: 'Cinzel', serif;
+  --font-ui: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swift: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #root { height: 100%; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-ui);
+  overflow: hidden;
+  cursor: none;
+}
+@media (hover: none) { body { cursor: auto; } }
+::selection { background: var(--kyber); color: var(--ink); }
+
+/* type helpers */
+.t-display { font-family: var(--font-display); letter-spacing: 0.12em; }
+.t-mono { font-family: var(--font-mono); letter-spacing: 0.08em; }
+.t-ui { font-family: var(--font-ui); }
+.t-dim { color: var(--ghost); }
+.t-kyber { color: var(--kyber); }
+.t-ember { color: var(--ember); }
+.t-threat { color: var(--threat); }
+.t-bone { color: var(--bone); }
+
+a, button { cursor: none; }
+@media (hover: none) { a, button { cursor: pointer; } }
+
+/* ── steel glyph typography ──
+   gradient lives on the .char spans. NOTE: text-shadow bleeds THROUGH the
+   transparent fill (darkens the glyph), so separation uses filter:drop-shadow
+   instead — it paints the halo OUTSIDE the letter shape only. */
+.gt-steel .char {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(180deg, #ffffff 0%, #eae8e2 34%, #9fb9c4 66%, #67e8f9 105%);
+  background-size: 100% 240%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: steelFlow 7s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 16px rgba(103, 232, 249, 0.22));
+}
+@keyframes steelFlow {
+  0%, 100% { background-position: 50% 8%; }
+  50% { background-position: 50% 92%; }
+}
+/* accent char inside a steel title — solid kyber fill (drop-shadow halo, no bleed) */
+.gt-steel .char.gt-kyber {
+  -webkit-text-fill-color: var(--kyber);
+  color: var(--kyber);
+  background: none;
+  animation: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 18px rgba(103, 232, 249, 0.5));
+}
+
+/* ── kinetic char hover (lift + glow ripple) ──
+   clearProps:'transform' on the entrance tween frees the chars
+   so this CSS transform can take over on hover. */
+.gt-steel .char, .slide-title .char {
+  transition: transform 0.32s var(--ease-out), text-shadow 0.32s var(--ease-out), color 0.32s;
+}
+.gt-steel .char:hover { transform: translateY(-6px); filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 30px rgba(103, 232, 249, 0.85)); }
+.gt-steel .char.gt-kyber:hover { transform: translateY(-6px); filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 34px rgba(103, 232, 249, 1)); }
+.slide-title .char:hover { color: var(--kyber-bright); text-shadow: 0 0 24px rgba(103, 232, 249, 0.55); }
+
+/* ── CTA magnetic button ── */
+.cta {
+  display: inline-flex; align-items: center; gap: 14px; padding: 15px 32px;
+  background: transparent; border: 1px solid rgba(103, 232, 249, 0.4); border-radius: 3px;
+  color: var(--kyber); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.26em;
+  transition: box-shadow 0.3s, border-color 0.3s, color 0.3s, background 0.3s;
+  animation: ctaBreathe 3s ease-in-out infinite;
+}
+.cta:hover { border-color: var(--kyber); color: var(--ink); background: var(--kyber); box-shadow: 0 0 34px rgba(103, 232, 249, 0.55); }
+.cta .cta-arrow { transition: transform 0.3s var(--ease-out); }
+.cta:hover .cta-arrow { transform: translateX(6px); }
+@keyframes ctaBreathe {
+  0%, 100% { box-shadow: 0 0 12px rgba(103, 232, 249, 0.12); }
+  50% { box-shadow: 0 0 30px rgba(103, 232, 249, 0.4); }
+}
+
+/* ── shared fx primitives ── */
+.layer-fixed { position: fixed; inset: 0; pointer-events: none; }
+.vignette { background: radial-gradient(ellipse at center, transparent 55%, rgba(2, 4, 8, 0.9) 100%); }
+
+/* scanline sweep */
+.scanline {
+  position: absolute; left: 0; right: 0; height: 2px; z-index: 46; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.32) 30%, rgba(159, 242, 255, 0.5) 50%, rgba(103, 232, 249, 0.32) 70%, transparent);
+  box-shadow: 0 0 18px rgba(103, 232, 249, 0.35);
+  opacity: 0.5;
+  animation: scanSweep 5.2s cubic-bezier(0.4, 0.1, 0.5, 0.9) infinite;
+}
+@keyframes scanSweep {
+  0% { top: -4px; opacity: 0; }
+  8% { opacity: 0.5; }
+  46% { opacity: 0.38; }
+  62% { top: 100%; opacity: 0; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* HUD corner brackets */
+.corner { position: absolute; width: 54px; height: 54px; border: 1px solid rgba(103, 232, 249, 0.35); pointer-events: none; }
+.corner.tl { top: 16px; left: 16px; border-right: 0; border-bottom: 0; }
+.corner.tr { top: 16px; right: 16px; border-left: 0; border-bottom: 0; }
+.corner.bl { bottom: 16px; left: 16px; border-right: 0; border-top: 0; }
+.corner.br { bottom: 16px; right: 16px; border-left: 0; border-top: 0; }
+
+/* slow orbit ring (decorative) */
+.orbit-ring { animation: spinSlow 46s linear infinite; transform-origin: center; }
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+
+/* pulsing ring */
+.pulse-ring { animation: pulseRing 2.6s ease-in-out infinite; }
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.14); opacity: 0.12; }
+}
+
+/* blink caret */
+@keyframes caretBlink { 0% { opacity: 0; } 8% { opacity: 1; } 50% { opacity: 1; } 58% { opacity: 0; } 100% { opacity: 0; } }
+.caret { display: inline-block; width: 0.6em; height: 1.05em; background: var(--kyber); margin-left: 3px; vertical-align: -0.15em; animation: caretBlink 1.1s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline, .orbit-ring, .pulse-ring, .gt-steel .char { animation: none !important; }
+}

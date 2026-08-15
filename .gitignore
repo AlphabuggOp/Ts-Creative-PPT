@@ -1,0 +1,12 @@
+node_modules/
+dist/
+shots/
+exports/*
+!exports/SANCTUM-Deck.pptx
+!exports/SANCTUM-WriteUp.pdf
+!exports/SANCTUM-UIUX.pdf
+!exports/SANCTUM-JudgesGuide.pdf
+!exports/SANCTUM-Promo.mp4
+*.log
+*.tsbuildinfo
+.DS_Store
